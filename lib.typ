@@ -717,25 +717,28 @@
       #colbreak()
       #set align(right)
 
-      #if mentors.len() == 1 {
-        let mentor = mentors.at(0)
-        if "gender" in mentor.keys() {
-          if mentor.gender == "m" [Перевірив:\ ] else if (
-            mentor.gender == "f"
-          ) [Перевірила:\ ]
-        } else [Перевірили:\ ]
-        [
-          #mentor.name\
+      #if type(mentors) == array {
+        if mentors.len() == 1 {
+          let mentor = mentors.at(0)
+          if "gender" in mentor.keys() {
+            if mentor.gender == "m" [Перевірив:\ ] else if (
+              mentor.gender == "f"
+            ) [Перевірила:\ ]
+          } else [Перевірили:\ ]
+          if (
+            "degree" in mentor.keys() and mentor.degree != none
+          ) [#mentor.degree\ ]
+          [#mentor.name\ ]
+        } else if mentors.len() > 1 [
+          Перевірили:\
+          #for mentor in mentors {
+            [
+              #mentor.degree\
+              #mentor.name\
+            ]
+          }
         ]
-      } else if mentors.len() > 1 [
-        Перевірили:\
-        #for mentor in mentors {
-          [
-            #mentor.degree\
-            #mentor.name\
-          ]
-        }
-      ]
+      }
     ]
 
     #v(1fr)
