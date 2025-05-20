@@ -705,7 +705,9 @@
           ст. гр. #edu_program\-#author.group\
           #author.name\
         ]
-        if "variant" in author.keys() and author.variant != none [Варіант: №#author.variant]
+        if (
+          "variant" in author.keys() and author.variant != none
+        ) [Варіант: №#author.variant]
       } else [
         Виконали:\
         ст. гр. #edu_program\-#authors.at(0).group\
@@ -717,14 +719,15 @@
 
       #if mentors.len() == 1 {
         let mentor = mentors.at(0)
-        if mentor.gender == none [Перевірили:\ ] else if (
-          mentor.gender == "m"
-        ) [Перевірив:\ ] else [Перевірилa:\ ]
+        if "gender" in mentor.keys() {
+          if mentor.gender == "m" [Перевірив:\ ] else if (
+            mentor.gender == "f"
+          ) [Перевірила:\ ]
+        } else [Перевірили:\ ]
         [
-          #if mentor.degree != none [#mentor.degree\ ]
           #mentor.name\
         ]
-      } else [
+      } else if mentors.len() > 1 [
         Перевірили:\
         #for mentor in mentors {
           [
