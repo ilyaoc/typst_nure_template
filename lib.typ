@@ -66,9 +66,9 @@
   }.replace(" ", "_")
 
   let caption = if sink.pos().len() == 0 {
-    caption + " (рисунок виконано самостійно)"
-  } else if sink.pos().first() == none {
     caption
+  } else if sink.pos().first() == none {
+    caption + " (рисунок виконано самостійно)"
   } else {
     [#caption (за даними #sink.pos().first())]
   }
@@ -79,55 +79,62 @@
     ) #label(label_string)]
 }
 
-// Styling {{{1
-/// NOTE: may be wrong
-#let ua_alpha_numbering = "абвгдежиклмнпрстуфхцшщюя".split("") // 0 = "", 1 = "а"
+#let spacing = 0.95em // spacing between lines
+#let num-to-alpha = "абвгдежиклмнпрстуфхцшщюя".split("") // 0 = "", 1 = "а"
 
-// general outlook {{{2
-// spacing between lines
-#let spacing = 0.95em
-
-// main {{{2
-#let style(it) = {
+/// DSTU 3008:2015 Style
+/// -> content
+/// - it (content): Content to apply the style to.
+/// - skip (int): Do not show page number for this number of pages.
+/// - offset (int): Adjust all page numbers by this amount.
+#let dstu-style(
+  it,
+  skip: 0,
+  offset: 0,
+) = {
+  // General Styling {{{1
   set page(
     paper: "a4",
-    margin: (top: 20mm, right: 10mm, bottom: 20mm, left: 25mm),
     number-align: top + right,
-    numbering: (..numbers) => {
-      if numbers.pos().at(0) != 1 {
-        numbering("1", numbers.pos().at(0))
-      }
-    },
+    margin: (top: 20mm, right: 10mm, bottom: 20mm, left: 25mm),
+    numbering: (i, ..) => if i > skip { numbering("1", i + offset) },
   )
 
   set text(
-    font: ("Times New Roman", "Liberation Serif"),
+    lang: "uk",
     size: 14pt,
     hyphenate: false,
-    lang: "uk",
+    font: ("Times New Roman", "Liberation Serif"),
   )
-  set par(justify: true, first-line-indent: (amount: 1.25cm, all: true))
+
+  set par(
+    justify: true,
+    spacing: spacing,
+    leading: spacing,
+    first-line-indent: (amount: 1.25cm, all: true),
+  )
+
+  set block(spacing: spacing)
   set underline(evade: false)
 
-  // set 1.5 line spacing
-  set block(spacing: spacing)
-  set par(spacing: spacing)
-  set par(leading: spacing)
-
-  // enums and lists {{{3
+  // Enums & Lists {{{1
+  // First level
   set enum(
-    numbering: i => { ua_alpha_numbering.at(i) + ")" },
     indent: 1.25cm,
     body-indent: 0.5cm,
+    numbering: i => { num-to-alpha.at(i) + ")" },
   )
+
+  // Second level and further nesting
   show enum: it => {
     set enum(indent: 0em, numbering: "1)")
     it
   }
 
+  // Lists are not intended for multiple levels, use `enum`
   set list(indent: 1.35cm, body-indent: 0.5cm, marker: [--])
 
-  // figures {{{3
+  // Figures {{{1
   show figure: it => {
     v(spacing * 2, weak: true)
     it
@@ -138,103 +145,52 @@
   show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption.where(kind: table): set align(left)
 
-  // figure numbering
+  // Numbering {{{1
   show heading.where(level: 1): it => {
     counter(math.equation).update(0)
+    counter(figure.where(kind: raw)).update(0)
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
-    counter(figure.where(kind: raw)).update(0)
     it
   }
-  set math.equation(
-    numbering: (..num) => numbering(
-      "(1.1)",
-      counter(heading).get().at(0),
-      num.pos().first(),
-    ),
-  )
-  set figure(
-    numbering: (..num) => numbering(
-      "1.1",
-      counter(heading).get().at(0),
-      num.pos().first(),
-    ),
-  )
+  set figure(numbering: i => numbering("1.1", counter(heading).get().at(0), i))
+  set math.equation(numbering: i => numbering(
+    "(1.1)",
+    counter(heading).get().at(0),
+    i,
+  ))
 
-  // appearance of references to images and tables {{{3
-  set ref(
-    supplement: it => {
-      if it == none or not it.has("kind") {
-        it
-      } else if it.kind == image {
-        "див. рис."
-      } else if it.kind == table {
-        "див. таблицю"
-      } else {
-        it
-      }
-    },
-  )
-  show ref: it => {
-    let el = it.element
-
-    if el == none or not el.has("kind") {
-      return it
-    }
-    if el.kind != image and el.kind != table {
-      return it
-    }
-
-    [(#it)]
-  }
-
-  // headings {{{3
+  // Headings {{{1
   set heading(numbering: "1.1")
 
-  show heading.where(level: 1): it => {
+  show heading: it => if it.level == 1 {
     set align(center)
     set text(size: 14pt, weight: "semibold")
 
     pagebreak(weak: true)
     upper(it)
     v(spacing * 2, weak: true)
-  }
-  show heading.where(level: 2): it => {
+  } else {
     set text(size: 14pt, weight: "regular")
 
     v(spacing * 2, weak: true)
     block(width: 100%, spacing: 0em)[
       #h(1.25cm)
-      #counter(heading).display(it.numbering)
+      #counter(heading).display(auto)
       #it.body
     ]
     v(spacing * 2, weak: true)
   }
 
-  show heading.where(level: 3): it => {
-    set text(size: 14pt, weight: "regular")
-
-    v(spacing * 2, weak: true)
-    block(width: 100%, spacing: 0em)[
-      #h(1.25cm)
-      #counter(heading).display(it.numbering)
-      #it.body
-    ]
-    v(spacing * 2, weak: true)
-  }
-
-  // listings {{{3
+  // Listings {{{1
   show raw: it => {
-    let new_spacing = 0.5em
-    set block(spacing: new_spacing)
-    set par(
-      spacing: new_spacing,
-      leading: new_spacing,
-    )
+    let raw-spacing = 0.5em
+    set block(spacing: raw-spacing)
+    set par(spacing: raw-spacing, leading: raw-spacing)
     set text(
       size: 11pt,
-      font: ("Courier New", "Liberation Mono"),
       weight: "semibold",
+      font: ("Courier New", "Liberation Mono"),
     )
 
     v(spacing * 2.5, weak: true)
@@ -243,46 +199,46 @@
   }
 
   it
+  // }}}
 }
 
-// appendices {{{2
-#let appendices_style(it) = {
+/// DSTU 3008:2015 Appendices Style
+/// -> content
+/// - it (content): Content to apply the style to.
+#let appendices-style(it) = /* {{{ */ {
+  // Numbering
   counter(heading).update(0)
+  set heading(numbering: (i, ..n) => (
+    upper(num-to-alpha.at(i)) + numbering(".1.1", ..n)
+  ))
+  set figure(numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i])
+  set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
 
-  set heading(
-    numbering: (i, ..nums) => {
-      let char = upper(ua_alpha_numbering.at(i))
-      if nums.pos().len() == 0 { char } else {
-        char + "." + nums.pos().map(str).join(".")
-      }
-    },
-  )
-
-  show heading.where(level: 1): it => {
+  // Headings
+  show heading: it => if it.level == 1 {
     set align(center)
     set text(size: 14pt, weight: "regular")
 
     pagebreak(weak: true)
-    bold[ДОДАТОК #counter(heading).display(it.numbering)]
+    text(weight: "bold")[ДОДАТОК #counter(heading).display(auto)]
     linebreak()
     it.body
     v(spacing * 2, weak: true)
-  }
-
-  show heading.where(level: 2): it => {
+  } else {
     set text(size: 14pt, weight: "regular")
 
     v(spacing * 2, weak: true)
     block(width: 100%, spacing: 0em)[
       #h(1.25cm)
-      #counter(heading).display(it.numbering)
+      #counter(heading).display(auto)
       #it.body
     ]
     v(spacing * 2, weak: true)
   }
 
   it
-}
+} // }}}
+
 
 // Coursework template {{{1
 
@@ -315,7 +271,7 @@
 ) = {
   set document(title: title, author: author.name)
 
-  show: style
+  show: dstu-style.with(skip: 1)
 
   let bib-count = state("citation-counter", ())
   show cite: it => {
@@ -421,9 +377,7 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(author.course)],
-      [#bold[Група] #uline([#edu_program\-#author.group])],
-      [#bold[Семестр] #uline(author.semester)],
+      [#bold[Курс] #uline(author.course)], [#bold[Група] #uline([#edu_program\-#author.group])], [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -640,7 +594,7 @@
     }
   }
 
-  appendices_style(appendices)
+  appendices-style(appendices)
 }
 
 // Practice and Laboratory works template {{{1
@@ -648,27 +602,33 @@
 /// DSTU 3008:2015 Template for NURE
 /// -> content
 /// - doc (content): Content to apply the template to.
-/// - doctype ("ЛБ" | "ПЗ"): Document type.
 /// - edu_program (str): Education program shorthand.
-/// - title (str): Title of the document.
+/// - doctype ("ЛБ" | "ПЗ" | str): Document type.
+/// - title (str or none): Title of the document. Optional.
 /// - subject (str): Subject shorthand.
-/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
-/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors.
 /// - worknumber (int or none): Number of the work. Optional.
+/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
+/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors. Optional.
+/// - chapters (): List of file names in chapters/ subdirectory. Optional.
 #let pz-lb(
   doc,
-  doctype: none,
   university: "ХНУРЕ",
   edu_program: none,
+  doctype: none,
   title: none,
   subject: none,
   worknumber: none,
   authors: (),
   mentors: (),
+  chapters: (),
 ) = {
+  assert.ne(edu_program, none, message: "Missing argument: \"edu_program\"")
+  assert.ne(doctype, none, message: "Missing argument: \"doctype\"")
+  assert.ne(subject, none, message: "Missing argument: \"subject\"")
+
   set document(title: title, author: authors.at(0).name)
 
-  show: style
+  show: dstu-style.with(skip: 1)
 
   let uni = universities.at(university)
   let edu_prog = uni.edu_programs.at(edu_program)
@@ -681,15 +641,19 @@
     Кафедра #edu_prog.department_gen
 
     \ \ \
-    Звіт \
-    з
-    #if doctype == "ЛБ" [лабораторної роботи] else [практичної роботи]
+    #if doctype == "ЛБ" [Звіт \ з лабораторної роботи] else if (
+      doctype == "ПЗ"
+    ) [Звіт \ з практичної роботи] else [#doctype]
     #if worknumber != none {
-      context counter(heading).update(worknumber - if title == none {0} else {1})
+      context counter(heading).update(
+        worknumber - if title == none { 0 } else { 1 },
+      )
       [№#worknumber]
+    } else if title != none and worknumber != none {
+      context counter(heading).update(1)
     }
 
-    з дисципліни: "#uni.subjects.at(subject, default: "UNKNOWN SUBJECT, PLEASE OPEN AN ISSUE")"
+    з дисципліни: "#uni.subjects.at(subject)"
 
     #if title != none [з теми: "#title"]
 
@@ -708,7 +672,7 @@
         if (
           "variant" in author.keys() and author.variant != none
         ) [Варіант: №#author.variant]
-      } else [
+      } else if authors.len() > 1 [
         Виконали:\
         ст. гр. #edu_program\-#authors.at(0).group\
         #for author in authors [#author.name\ ]
@@ -751,6 +715,7 @@
   if title != none [#heading(title)]
 
   doc
+  chapters.map(chapter => include "/chapters/" + str(chapter) + ".typ").join()
 }
 
 // vim:sts=2:sw=2:fdl=0:fdm=marker:cms=/*%s*/

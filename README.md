@@ -75,7 +75,7 @@ Some text
 // If you ever need appendices in pz-lb template use the show rule
 // WARNING: when using coursework template use its own argument,
 // so it can put bibliography before appendices
-#show: appendices_style
+#show: appendices-style
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[

@@ -30,7 +30,7 @@
 - #lorem(42);
 - #lorem(27).
 
-#show: appendices_style
+#show: appendices-style
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[
