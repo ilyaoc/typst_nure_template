@@ -722,4 +722,4 @@
   chapters.map(chapter => include "/chapters/" + str(chapter) + ".typ").join()
 }
 
-// vim:sts=2:sw=2:fdl=0:fdm=marker:cms=/*%s*/
+// vim:sts=2:sw=2:fdm=marker:cms=/*%s*/
