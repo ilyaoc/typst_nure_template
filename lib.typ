@@ -154,11 +154,13 @@
     it
   }
   set figure(numbering: i => numbering("1.1", counter(heading).get().at(0), i))
-  set math.equation(numbering: i => numbering(
-    "(1.1)",
-    counter(heading).get().at(0),
-    i,
-  ))
+  set math.equation(
+    numbering: i => numbering(
+      "(1.1)",
+      counter(heading).get().at(0),
+      i,
+    ),
+  )
 
   // Headings {{{1
   set heading(numbering: "1.1")
@@ -208,9 +210,11 @@
 #let appendices-style(it) = /* {{{ */ {
   // Numbering
   counter(heading).update(0)
-  set heading(numbering: (i, ..n) => (
-    upper(num-to-alpha.at(i)) + numbering(".1.1", ..n)
-  ))
+  set heading(
+    numbering: (i, ..n) => (
+      upper(num-to-alpha.at(i)) + numbering(".1.1", ..n)
+    ),
+  )
   set figure(numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i])
   set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
 
@@ -377,7 +381,9 @@
     grid(
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
-      [#bold[Курс] #uline(author.course)], [#bold[Група] #uline([#edu_program\-#author.group])], [#bold[Семестр] #uline(author.semester)],
+      [#bold[Курс] #uline(author.course)],
+      [#bold[Група] #uline([#edu_program\-#author.group])],
+      [#bold[Семестр] #uline(author.semester)],
     )
 
     linebreak()
@@ -645,9 +651,7 @@
       doctype == "ПЗ"
     ) [Звіт \ з практичної роботи] else [#doctype]
     #if worknumber != none {
-      context counter(heading).update(
-        worknumber - if title == none { 0 } else { 1 },
-      )
+      context counter(heading).update(worknumber - if title == none { 0 } else { 1 })
       [№#worknumber]
     } else if title != none and worknumber != none {
       context counter(heading).update(1)
