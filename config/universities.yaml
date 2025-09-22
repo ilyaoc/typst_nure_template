@@ -1,5 +1,6 @@
 ХНУРЕ:
   name: Харківський національний університет радіоелектроніки
+  name_en: Kharkiv National University of Radioelectronics
   edu_programs:
     ПЗПІ:
       name_long: Інженерія програмного забезпечення
@@ -10,8 +11,10 @@
       department_gen: Інфокомунікаційної інженерії ім. В. В. Поповського
       code: 125
     КНТ:
+      name_en: CST # computer sciences and technologies
       name_long: Комп'ютерні науки та технології
       department_gen: Системотехніки
+      department_en: ST
       code: 122
   subjects:
     ODS: Основи Dаtа Sсіеnсе # NOTE: Eng O here
@@ -52,7 +55,13 @@
     ХТ: Хмарні технології
     ООАПС: Об'єктно-орієнтований аналіз в проектуванні систем
     СА: Системний аналіз
-    МППС: Методології проектування програмних систем
+    МППС: Methodologies of designing software systems
     ТЗІ: Технології захисту інформації
     АДан: Аналітика даних
     DMT: Decision making theory
+    ІТР: Information Technologies of Reengineering
+    ІТРОІ: Інтернет-технології Розподіленої Обробки Інформації
+    ДПК: Динаміка Проектних Команд
+    ОРвІТ: Оцінка Ризиків в IT-проектах
+    ТВО: Технології Високопродуктивних Обчислень
+    СОАПЗ: Сервіс-Орієнтована Архітектура Програмного Забезпечення
