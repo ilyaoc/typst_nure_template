@@ -184,11 +184,23 @@
     v(spacing * 2, weak: true)
   }
 
-  // Listings {{{1
-  show raw: it => {
-    let raw-spacing = 0.5em
-    set block(spacing: raw-spacing)
-    set par(spacing: raw-spacing, leading: raw-spacing)
+  show heading.where(level: 3): it => {
+    set text(size: 14pt, weight: "regular")
+
+    v(spacing * 2, weak: true)
+    block(width: 100%, spacing: 0em)[
+      #h(1.25cm)
+      #counter(heading).display(it.numbering)
+      #it.body
+    ]
+    v(spacing * 2, weak: true)
+  }
+
+  // listings {{{3
+  show raw.where(block: true): it => {
+    let new_spacing = 0.5em
+    set block(spacing: new_spacing)
+    set par(spacing: new_spacing, leading: new_spacing)
     set text(
       size: 11pt,
       weight: "semibold",
@@ -659,7 +671,7 @@
 
     з дисципліни: "#uni.subjects.at(subject)"
 
-    #if title != none [з теми: "#title"]
+    #if title != none [з теми: "#eval(title, mode: "markup")"]
 
     \ \ \ \
 
@@ -716,7 +728,7 @@
 
   pagebreak(weak: true)
 
-  if title != none [#heading(title)]
+  if title != none [#heading(eval(title, mode: "markup"))]
 
   doc
   chapters.map(chapter => include "/chapters/" + str(chapter) + ".typ").join()
