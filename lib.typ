@@ -230,6 +230,9 @@
   set figure(numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i])
   set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
 
+  // Heading supplement (Heading name shown when citing with @ref)
+  set heading(supplement: [Додаток])
+
   // Headings
   show heading: it => if it.level == 1 {
     set align(center)
