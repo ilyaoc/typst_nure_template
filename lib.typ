@@ -632,7 +632,6 @@
 /// - worknumber (int or none): Number of the work. Optional.
 /// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
 /// - mentors ((name: str, degree: str, gender: str or none),): List of mentors. Optional.
-/// - chapters (): List of file names in chapters/ subdirectory. Optional.
 #let pz-lb(
   doc,
   university: "ХНУРЕ",
@@ -643,7 +642,6 @@
   worknumber: none,
   authors: (),
   mentors: (),
-  chapters: (),
 ) = {
   assert.ne(edu_program, none, message: "Missing argument: \"edu_program\"")
   assert.ne(doctype, none, message: "Missing argument: \"doctype\"")
@@ -736,7 +734,6 @@
   if title != none [#heading(eval(title, mode: "markup"))]
 
   doc
-  chapters.map(chapter => include "/chapters/" + str(chapter) + ".typ").join()
 }
 
 // vim:sts=2:sw=2:fdm=marker:cms=/*%s*/
