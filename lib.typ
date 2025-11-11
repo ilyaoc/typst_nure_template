@@ -144,6 +144,8 @@
   set figure.caption(separator: [ -- ])
   show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption.where(kind: table): set align(left)
+  show figure.where(kind: raw): set figure.caption(position: top)
+  show figure.where(kind: raw): set align(left)
 
   // Numbering {{{1
   show heading.where(level: 1): it => {
