@@ -54,8 +54,8 @@ Copy `lib.typ` to your project's root directory.
   // etc: "and so on",
   // ...
 )
-// ...or using a config/doc.yaml file
-#show: pz-lb.with(..yaml("config/doc.yaml"))
+// ...or using a yaml/toml file
+#show: pz-lb.with(..toml("/doc.toml"))
 
 // this template automatically inserts a `=title`
 
@@ -84,6 +84,37 @@ Some text
 ]
 ```
 
+And a TOML file would look like this:
+```toml
+title = "Потiк керування та алгоритмічні структури Bash"
+subject = "СМП"
+doctype = "ЛБ"
+worknumber = 2
+
+[[mentors]]
+name = "Шевченко Т. Г."
+degree = "Доцент кафедри ПІ"
+gender = "m"
+
+[[mentors]]
+name = "Франко І. Я."
+degree = "Асистент кафедри ПІ"
+gender = "m"
+
+edu_program = "ПЗПІ"
+university = "ХНУРЕ"
+
+[[authors]]
+name = "Косач Л. П."
+full_name_gen = "Косач Лариси Петрівни"
+course = 2
+edu = "ПЗПІ"
+gender = "f"
+group = "23-2"
+semester = 4
+variant = 8
+```
+
 ### Notes:
 1. Use `#v(-spacing)` to remove vertical spacing between titles (this cannot be automatically handled by the template). Variable `spacing` used here is imported from the template.
 2. When importing `@local/nure:0.1.0` and specifying file paths in functions handled by the package, the path will relative to package's root directory, e.g. setting `#show: coursework.with(bib_path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.0/bibl.yml`, the same is for `#img` function, which makes it quite annoying and forces one to import `lib.typ` file. Please open an issue or contact us in any other way if you have any advice.
@@ -91,9 +122,9 @@ Some text
 ### Example Project Structure
 ```
 project/
+├── doc.toml -- for things that don't change across works, i.e. author and mentor metadata
 ├── main.typ -- for boilerplate code and importing everything 
 ├── config/
-│   ├── doc.yaml -- for things that don't change across works, i.e. author and mentor metadata
 │   ├── universities.yaml -- for user-specific configuration, i.e. education programs and disciplines
 │   └── ...
 ├── src/

@@ -1,6 +1,29 @@
 #import "@local/nure:0.1.0": *
 
-#show: pz-lb.with(..yaml("config/doc.yaml"))
+#show: pz-lb.with(
+  title: "Потiк керування та алгоритмічні структури Bash",
+  subject: "СМП",
+  doctype: "ЛБ",
+  worknumber: 2,
+  mentors: (
+    (name: "Шевченко Т. Г.", degree: "Доцент кафедри ПІ", gender: "m"),
+    (name: "Франко І. Я.", degree: "Асистент кафедри ПІ", gender: "m"),
+  ),
+  edu_program: "ПЗПІ",
+  university: "ХНУРЕ",
+  authors: (
+    (
+      name: "Косач Л. П.",
+      full_name_gen: "Косач Лариси Петрівни",
+      course: 2,
+      edu: "ПЗПІ",
+      gender: "f",
+      group: "23-2",
+      semester: 4,
+      variant: 8,
+    ),
+  ),
+)
 
 #v(-spacing)
 
