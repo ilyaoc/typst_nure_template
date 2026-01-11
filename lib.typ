@@ -285,9 +285,6 @@
   it
 } // }}}
 
-
-// FIX: sync with pz-lb ASAP
-
 // Coursework template {{{1
 
 /// DSTU 3008:2015 Template for NURE

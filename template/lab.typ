@@ -1,24 +1,23 @@
-#import "@local/nure:0.1.0": *
+#import "lib.typ": *
 
 #show: pz-lb.with(
-  title: "Потiк керування та алгоритмічні структури Bash",
+  university: "ХНУРЕ",
   subject: "СМП",
-  doctype: "ЛБ",
-  worknumber: 2,
+  type: "ЛБ",
+  number: 2,
+  title: "Потiк керування та алгоритмічні структури Bash",
   mentors: (
     (name: "Шевченко Т. Г.", degree: "Доцент кафедри ПІ", gender: "m"),
     (name: "Франко І. Я.", degree: "Асистент кафедри ПІ", gender: "m"),
   ),
-  edu_program: "ПЗПІ",
-  university: "ХНУРЕ",
   authors: (
     (
       name: "Косач Л. П.",
       full_name_gen: "Косач Лариси Петрівни",
-      course: 2,
-      edu: "ПЗПІ",
-      gender: "f",
+      edu_program: "ПЗПІ",
       group: "23-2",
+      gender: "f",
+      course: 2,
       semester: 4,
       variant: 8,
     ),
