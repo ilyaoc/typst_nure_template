@@ -311,7 +311,6 @@
   title: none,
   authors: (),
   mentors: (),
-  // edu_program: none,
   task_list: (),
   calendar_plan: (),
   abstract: (),
@@ -667,7 +666,7 @@
     #pz-lb-title(type, number: number)
 
     з дисципліни: "#uni.subjects.at(subject, default: subject)"
-    #if title != none [з теми: "#eval(title, mode: "markup")"]
+    #if title != none [\ з теми: "#eval(title, mode: "markup")"]
 
 
     \ \ \ \
