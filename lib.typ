@@ -5,6 +5,9 @@
 
 // Template formatting functions {{{1
 
+/// bold text
+#let bold(content) = text(weight: "bold")[#content]
+
 /// numberless heading
 #let nheading(title) = heading(depth: 1, numbering: none, title)
 
@@ -21,9 +24,6 @@
   #if align != right { hfill(1fr) }
 ]
 
-/// bold text
-#let bold(content) = text(weight: "bold")[#content]
-
 /// month name from its number
 #let month_gen(month) = (
   "січня",
@@ -39,6 +39,27 @@
   "листопада",
   "грудня",
 ).at(month - 1)
+
+#let is-cyr(text) = text.split("").any(char => "А" <= char and char <= "я")
+
+#let gender-form(verb, gender: "p") = {
+  (
+    "author": ("m": "Виконав", "f": "Виконала", "p": "Виконали"),
+    "mentor": ("m": "Перевірив", "f": "Перевірила", "p": "Перевірили"),
+  )
+    .at(verb)
+    .at(if gender == "m" or gender == "f" { gender } else { "p" }, default: "p")
+}
+
+#let pz-lb-title(type, number: none) = {
+  let type-title = (
+    "ЛБ": [Звіт \ з лабораторної роботи],
+    "ПЗ": [Звіт \ з практичної роботи],
+    "КР": [Контрольна робота],
+    "РФ": [Реферат], // зрада
+  ).at(type, default: type)
+  if number != none { [#type-title №#number] } else { [#type-title] }
+}
 
 // Helper functions {{{1
 
@@ -229,8 +250,12 @@
       upper(num-to-alpha.at(i)) + numbering(".1.1", ..n)
     ),
   )
-  set figure(numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i])
-  set math.equation(numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)])
+  set figure(
+    numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i],
+  )
+  set math.equation(
+    numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)],
+  )
 
   // Heading supplement (Heading name shown when citing with @ref)
   set heading(supplement: [Додаток])
@@ -261,6 +286,8 @@
 } // }}}
 
 
+// FIX: sync with pz-lb ASAP
+
 // Coursework template {{{1
 
 /// DSTU 3008:2015 Template for NURE
@@ -270,7 +297,6 @@
 /// - subject (str): Subject short name.
 /// - authors ((name: str, full_name_gen: str, variant: int, course: int, semester: int, group: str, gender: str),): List of authors.
 /// - mentors ((name: str, degree: str),): List of mentors.
-/// - edu_program (str): Education program shorthand.
 /// - task_list (done_date: datetime, initial_date: datetime, source: (content | str), content: (content | str), graphics: (content | str)): Task list object.
 /// - calendar_plan ( plan_table: (content | str), approval_date: datetime): Calendar plan object.
 /// - abstract (keywords: (str, ), text: (content | str)): Abstract object.
@@ -278,19 +304,21 @@
 /// - appendices (content): Content with appendices.
 #let coursework(
   doc,
-  title: none,
-  subject: none,
   university: "ХНУРЕ",
-  author: (),
+  subject: none,
+  type: none,
+  number: none,
+  title: none,
+  authors: (),
   mentors: (),
-  edu_program: none,
+  // edu_program: none,
   task_list: (),
   calendar_plan: (),
   abstract: (),
   bib_path: none,
   appendices: (),
 ) = {
-  set document(title: title, author: author.name)
+  set document(title: title, author: authors.at(0).name)
 
   show: dstu-style.with(skip: 1)
 
@@ -304,10 +332,10 @@
     it
   }
 
-
+  let author = authors.at(0)
   let head_mentor = mentors.at(0)
   let uni = universities.at(university)
-  let edu_prog = uni.edu_programs.at(edu_program)
+  let edu_prog = uni.edu_programs.at(author.edu_program)
 
   // page 1 {{{2
   [
@@ -323,15 +351,16 @@
 
     ПОЯСНЮВАЛЬНА ЗАПИСКА\
     ДО КУРСОВОЇ РОБОТИ\
-    з дисципліни: "#uni.subjects.at(subject, default: "NONE")"\
+    з дисципліни: "#uni.subjects.at(subject, default: subject)"\
     Тема роботи: "#title"
 
     \ \ \
 
     #columns(2, gutter: 4cm)[
       #set align(left)
+      #set par(first-line-indent: 0pt)
 
-      #if author.gender == "m" { [Виконав\ ] } else { [Виконала\ ] } ст. гр. #edu_program\-#author.group
+      #gender-form("author", gender: author.gender) ст. гр. #author.edu_program\-#author.group
 
       \
       Керівник:\
@@ -342,15 +371,12 @@
 
       \
       Комісія:\
-      #for mentor in mentors {
-        [#mentor.degree\
-        ]
-      }
+      #for m in mentors { [#m.degree\ ] }
 
       #colbreak()
       #set align(left)
 
-      \
+
       #author.name
 
       \ \
@@ -360,10 +386,7 @@
       #underline(" " * 35)
 
       \ \
-      #for mentor in mentors {
-        [#mentor.name\
-        ]
-      }
+      #for m in mentors { [#m.name\ ] }
     ]
 
     #v(1fr)
@@ -390,7 +413,7 @@
       {
         uline(align: left, edu_prog.department_gen)
         linebreak()
-        uline(align: left, uni.subjects.at(subject))
+        uline(align: left, uni.subjects.at(subject, default: subject))
         linebreak()
         uline(align: left, [#edu_prog.code #edu_prog.name_long])
       },
@@ -399,7 +422,7 @@
       columns: (1fr, 1fr, 1fr),
       gutter: 0.3fr,
       [#bold[Курс] #uline(author.course)],
-      [#bold[Група] #uline([#edu_program\-#author.group])],
+      [#bold[Група] #uline([#author.edu_program\-#author.group])],
       [#bold[Семестр] #uline(author.semester)],
     )
 
@@ -519,31 +542,16 @@
 
     \
 
-    #{
-      let keywords = abstract.keywords.map(upper)
-      let is_cyrillic = word => word.split("").any(char => ("А" <= char and char <= "я"))
+    #(
+      abstract
+        .keywords
+        .map(upper)
+        .sorted(by: (a, b) => {
+          if is-cyr(a) != is-cyr(b) { true } else { a < b }
+        })
+        .join(", ")
+    )
 
-      let n = keywords.len()
-      for i in range(n) {
-        for j in range(0, n - i - 1) {
-          if (
-            (
-              not is_cyrillic(keywords.at(j)) and is_cyrillic(keywords.at(j + 1))
-            )
-              or (
-                is_cyrillic(keywords.at(j)) == is_cyrillic(keywords.at(j + 1)) and keywords.at(j) > keywords.at(j + 1)
-              )
-          ) {
-            (keywords.at(j), keywords.at(j + 1)) = (
-              keywords.at(j + 1),
-              keywords.at(j),
-            )
-          }
-        }
-      }
-
-      keywords.join(", ")
-    }
 
     \
 
@@ -575,26 +583,18 @@
 
     let bib_data = yaml(bib_path)
 
-    let format-entry(citation) = {
-      if (citation.type == "Web") {
-        let date_array = citation.url.date.split("-")
+    let format-entry(c) = {
+      if (c.type == "Web") {
+        let date_array = c.url.date.split("-")
         let date = datetime(
           year: int(date_array.at(0)),
           month: int(date_array.at(1)),
           day: int(date_array.at(2)),
         )
-        [
-          #citation.title.
-          #citation.author.
-          URL: #citation.url.value (дата звернення: #date.display("[day].[month].[year]")).
-        ]
-      } else if citation.type == "Book" [
-        #citation.author
-        #citation.title.
-        #citation.publisher,
-        #citation.date.
-        #citation.page-total c.
-      ] else [
+        [#c.title. #c.author. URL: #c.url.value (дата звернення: #date.display("[day].[month].[year]")).]
+      } else if (
+        c.type == "Book"
+      ) [#c.author #c.title. #c.publisher, #c.date. #c.page-total c. ] else [
         UNSUPPORTED BIBLIOGRAPHY ENTRY TYPE, PLEASE OPEN AN ISSUE
       ]
     }
@@ -608,7 +608,10 @@
     }
 
     context {
-      for (i, citation) in query(ref.where(element: none)).map(r => str(r.target)).dedup().enumerate() {
+      for (i, citation) in query(ref.where(element: none))
+        .map(r => str(r.target))
+        .dedup()
+        .enumerate() {
         enum.item(
           i + 1,
           format-entry(bib_data.at(citation)),
@@ -625,103 +628,74 @@
 /// DSTU 3008:2015 Template for NURE
 /// -> content
 /// - doc (content): Content to apply the template to.
-/// - edu_program (str): Education program shorthand.
-/// - doctype ("ЛБ" | "ПЗ" | str): Document type.
-/// - title (str or none): Title of the document. Optional.
-/// - subject (str): Subject shorthand.
-/// - worknumber (int or none): Number of the work. Optional.
-/// - authors ((name: str, full_name_gen: str, group: str, gender: str, variant: int or none),): List of authors.
-/// - mentors ((name: str, degree: str, gender: str or none),): List of mentors. Optional.
+/// - university: "ХНУРЕ": University metadata. Optional.
+/// - subject: str: Subject shortcode.
+/// - type: ("ЛБ" | "ПЗ" | "КР" | "РФ" | str): Work type.
+/// - number: int or none: Work number. Optional.
+/// - title: str or none: Work title. Optional.
+/// - authors ((name: str, full_name_gen: str or none, edu_program: str, group: str, gender: str, variant: int or none),): List of authors.
+/// - mentors ((name: str, degree: str, gender: ("m" | "f" | "p" | none)),): List of mentors. Optional.
 #let pz-lb(
   doc,
   university: "ХНУРЕ",
-  edu_program: none,
-  doctype: none,
-  title: none,
   subject: none,
-  worknumber: none,
+  type: none,
+  number: none,
+  title: none,
   authors: (),
   mentors: (),
 ) = {
-  assert.ne(edu_program, none, message: "Missing argument: \"edu_program\"")
-  assert.ne(doctype, none, message: "Missing argument: \"doctype\"")
-  assert.ne(subject, none, message: "Missing argument: \"subject\"")
+  // TODO: add actually relevant asserts
+
+  let edu_program = authors.at(0).edu_program
+  let uni = universities.at(university)
 
   set document(title: title, author: authors.at(0).name)
 
   show: dstu-style.with(skip: 1)
 
-  let uni = universities.at(university)
-  let edu_prog = uni.edu_programs.at(edu_program)
   // page 1 {{{2
+
   align(center)[
     МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ \
     #upper(uni.name)
 
     \ \
-    Кафедра #edu_prog.department_gen
+    Кафедра #uni.edu_programs.at(edu_program).department_gen
 
     \ \ \
-    #if doctype == "ЛБ" [Звіт \ з лабораторної роботи] else if (
-      doctype == "ПЗ"
-    ) [Звіт \ з практичної роботи] else [#doctype]
-    #if worknumber != none {
-      context counter(heading).update(worknumber - if title == none { 0 } else { 1 })
-      [№#worknumber]
-    } else if title != none and worknumber != none {
-      context counter(heading).update(1)
-    }
+    #pz-lb-title(type, number: number)
 
-    з дисципліни: "#uni.subjects.at(subject)"
-
+    з дисципліни: "#uni.subjects.at(subject, default: subject)"
     #if title != none [з теми: "#eval(title, mode: "markup")"]
 
-    \ \ \ \
 
+    \ \ \ \
     #columns(2)[
       #set align(left)
       #set par(first-line-indent: 0pt)
+
       #if authors.len() == 1 {
-        let author = authors.at(0)
-        if author.gender == "m" [Виконав:\ ] else [Виконала:\ ]
-        [
-          ст. гр. #edu_program\-#author.group\
-          #author.name\
-        ]
-        if (
-          "variant" in author.keys() and author.variant != none
-        ) [Варіант: №#author.variant]
+        let a = authors.at(0)
+        [#gender-form("author", gender: if "gender" in a.keys() { a.gender } else { none }):\ ]
+        [ст. гр. #a.edu_program\-#a.group\ #a.name\ ]
+        if a.variant != none [Варіант: №#a.variant]
       } else if authors.len() > 1 [
-        Виконали:\
-        ст. гр. #edu_program\-#authors.at(0).group\
-        #for author in authors [#author.name\ ]
+        #gender-form("author"):\
+        #for a in authors [ст. гр. #a.edu_program\-#a.group\ #a.name\ ]
       ]
 
       #colbreak()
       #set align(right)
 
-      #if type(mentors) == array {
-        if mentors.len() == 1 {
-          let mentor = mentors.at(0)
-          if "gender" in mentor.keys() {
-            if mentor.gender == "m" [Перевірив:\ ] else if (
-              mentor.gender == "f"
-            ) [Перевірила:\ ]
-          } else [Перевірили:\ ]
-          if (
-            "degree" in mentor.keys() and mentor.degree != none
-          ) [#mentor.degree\ ]
-          [#mentor.name\ ]
-        } else if mentors.len() > 1 [
-          Перевірили:\
-          #for mentor in mentors {
-            [
-              #mentor.degree\
-              #mentor.name\
-            ]
-          }
-        ]
-      }
+      #if mentors.len() == 1 {
+        let m = mentors.at(0)
+        [#gender-form("mentor", gender: if "gender" in m.keys() { m.gender } else { none }):\ ]
+        if "degree" in m.keys() and m.degree != none [#m.degree\ ]
+        [#m.name\ ]
+      } else if mentors.len() > 1 [
+        #gender-form("mentor"):\
+        #for mentor in mentors { [#mentor.degree\ #mentor.name\ ] }]
     ]
 
     #v(1fr)
@@ -731,7 +705,15 @@
 
   pagebreak(weak: true)
 
-  if title != none [#heading(eval(title, mode: "markup"))]
+  // TODO(unexplrd): wrap my head around the old way
+  if title == none {
+    if number == none { context counter(heading).update(1) } else {
+      context counter(heading).update(number)
+    }
+  } else {
+    if number != none { context counter(heading).update(number - 1) }
+    heading(eval(title, mode: "markup"))
+  }
 
   doc
 }
