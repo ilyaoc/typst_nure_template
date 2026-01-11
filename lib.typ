@@ -644,7 +644,7 @@
   let edu_program = authors.at(0).edu_program
   let uni = universities.at(university)
 
-  set document(title: title, author: authors.at(0).name)
+  set document(title: title, author: authors.map(c => c.name))
 
   show: dstu-style.with(skip: 1)
 
