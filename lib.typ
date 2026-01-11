@@ -40,7 +40,7 @@
   "грудня",
 ).at(month - 1)
 
-#let is-cyr(text) = text.split("").any(char => "А" <= char and char <= "я")
+#let is-cyr(c) = regex("[\p{Cyrillic}]") in c
 
 #let gender-form(verb, gender: "p") = {
   (
@@ -303,8 +303,6 @@
   doc,
   university: "ХНУРЕ",
   subject: none,
-  type: none,
-  number: none,
   title: none,
   authors: (),
   mentors: (),
