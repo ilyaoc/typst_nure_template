@@ -177,13 +177,7 @@
     it
   }
   set figure(numbering: i => numbering("1.1", counter(heading).get().at(0), i))
-  set math.equation(
-    numbering: i => numbering(
-      "(1.1)",
-      counter(heading).get().at(0),
-      i,
-    ),
-  )
+  set math.equation(numbering: i => numbering("(1.1)", counter(heading).get().at(0), i))
 
   // Headings {{{1
   set heading(numbering: "1.1")
@@ -245,17 +239,9 @@
 #let appendices-style(it) = /* {{{ */ {
   // Numbering
   counter(heading).update(0)
-  set heading(
-    numbering: (i, ..n) => (
-      upper(num-to-alpha.at(i)) + numbering(".1.1", ..n)
-    ),
-  )
-  set figure(
-    numbering: i => [#upper(num-to-alpha.at(counter(heading).get().at(0))).#i],
-  )
-  set math.equation(
-    numbering: i => [(#upper(num-to-alpha.at(counter(heading).get().at(0))).#i)],
-  )
+  set heading(numbering: (i, ..n) => upper(num-to-alpha.at(i)) + numbering(".1.1", ..n))
+  set figure(numbering: i => upper(num-to-alpha.at(counter(heading).get().at(0))).i)
+  set math.equation(numbering: i => upper(num-to-alpha.at(counter(heading).get().at(0))).i)
 
   // Heading supplement (Heading name shown when citing with @ref)
   set heading(supplement: [Додаток])
@@ -266,7 +252,7 @@
     set text(size: 14pt, weight: "regular")
 
     pagebreak(weak: true)
-    text(weight: "bold")[ДОДАТОК #counter(heading).display(auto)]
+    bold([ДОДАТОК #counter(heading).display(auto)])
     linebreak()
     it.body
     v(spacing * 2, weak: true)
@@ -326,8 +312,8 @@
     it
   }
 
-  let author = authors.at(0)
-  let head_mentor = mentors.at(0)
+  let author = authors.first()
+  let head_mentor = mentors.first()
   let uni = universities.at(university)
   let edu_prog = uni.edu_programs.at(author.edu_program)
 
@@ -641,7 +627,7 @@
 ) = {
   // TODO: add actually relevant asserts
 
-  let edu_program = authors.at(0).edu_program
+  let edu_program = authors.first().edu_program
   let uni = universities.at(university)
 
   set document(title: title, author: authors.map(c => c.name))
@@ -670,8 +656,8 @@
       #set par(first-line-indent: 0pt)
 
       #if authors.len() == 1 {
-        let a = authors.at(0)
         [#gender-form("author", gender: if "gender" in a.keys() { a.gender } else { none }):\ ]
+        let a = authors.first()
         [ст. гр. #a.edu_program\-#a.group\ #a.name\ ]
         if a.variant != none [Варіант: №#a.variant]
       } else if authors.len() > 1 [
@@ -683,8 +669,8 @@
       #set align(right)
 
       #if mentors.len() == 1 {
-        let m = mentors.at(0)
         [#gender-form("mentor", gender: if "gender" in m.keys() { m.gender } else { none }):\ ]
+        let m = mentors.first()
         if "degree" in m.keys() and m.degree != none [#m.degree\ ]
         [#m.name\ ]
       } else if mentors.len() > 1 [
