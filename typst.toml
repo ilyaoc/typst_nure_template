@@ -1,7 +1,7 @@
 [package]
 name = "nure"
-version = "0.1.0"
-entrypoint = "lib.typ"
+version = "0.1.1"
+entrypoint = "src/lib.typ"
 authors = ["linerds"]
 license = "GPL-3.0"
 description = "Typst NURE package"
