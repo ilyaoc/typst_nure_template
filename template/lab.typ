@@ -1,4 +1,7 @@
-#import "lib.typ": *
+#import "@local/nure:0.1.1": *
+#import "utils.typ": img
+
+#import style: spacing
 
 #show: pz-lb.with(
   university: "ХНУРЕ",
@@ -13,8 +16,8 @@
   authors: (
     (
       name: "Косач Л. П.",
-      full_name_gen: "Косач Лариси Петрівни",
-      edu_program: "ПЗПІ",
+      full-name-gen: "Косач Лариси Петрівни",
+      edu-program: "КУІБ",
       group: "23-2",
       gender: "f",
       course: 2,
@@ -52,7 +55,7 @@
 - #lorem(42);
 - #lorem(27).
 
-#show: appendices-style
+#show: style.appendices
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[
@@ -65,7 +68,7 @@
 #v(-spacing)
 == Частина 1
 #lorem(100)
-== Частина2
+== Частина 2
 #lorem(200)
 
 = Приклад звіту 2

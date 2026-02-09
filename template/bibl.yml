@@ -6,7 +6,6 @@ go:
     value: https://go.dev/
     date: 2024-12-10
 
-
 htmx:
   type: Web
   title: Htmx - high power tools for html

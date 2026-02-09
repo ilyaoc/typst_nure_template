@@ -1,5 +1,5 @@
 # Typst Template for NURE Works
-![pz-lb title page](assets/pz-lb_title_page.png)
+<img src="assets/pz-lb_title_page.png" alt="pz-lb title page" width=350>
 
 ## General Info
 
@@ -16,7 +16,9 @@ This template:
 This template:
 - Sets up document styles;
 - Formats the title, task, calendar plan, and abstract pages;
-- Typesets the bibliography, outline, and appendices according to standard requirements.
+- Typesets the bibliography according to ДСТУ 3008:2015 using custom CSL style;
+- Typesets the outline and appendices according to standard requirements.
+
 
 ### Utilities
 - `nheading` - For unnumbered headings, such as "Introduction" and "Conclusion".
@@ -25,27 +27,29 @@ This template:
 - `bold` - Inserts bold text inside functional environments.
 - `img` - Inserts images with a caption, automatically deriving the label from the image file name.
 
+**Note:** `img()` is provided in `utils.typ` in project's root directory for compatibility, until [path() type](https://github.com/typst/typst/pull/7555) is released.
+
 ## Usage
 
 ### As a local typst package
 1. Clone this repository into ~/.local/share/typst/packages/:
 ```bash
-git clone -b 0.1.0 https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.0
+git clone -b 0.1.1 https://gitea.linerds.us/pencelheimer/typst_nure_template.git ~/.local/share/typst/packages/local/nure/0.1.1
 ```
 2. Init your project with Typst:
 ```bash
-typst init @local/nure:0.1.0 project-name
+typst init @local/nure:0.1.1 project-name
 ```
 
 ### As a standalone file
-Copy `lib.typ` to your project's root directory.
+Copy `src/` to your project's root directory, optionally renaming `src/` to `lib/`.
 
 ### In your project
 ```typst
 // Import the template either from a local package...
-#import "@local/nure:0.1.0": *
+#import "@local/nure:0.1.1": *
 // ...or by importing a lib.typ directly
-// #import "/lib.typ": *
+// #import "/lib/lib.typ": *
 
 // 1. Setup the document
 // by setting values directly...
@@ -65,9 +69,9 @@ Copy `lib.typ` to your project's root directory.
 Some text
 
 // ...or include your modules
-#include "src/intro.typ"
-#include "src/chapter1.typ"
-#include "src/chapter2.typ"
+#include "chapters/intro.typ"
+#include "chapters/chapter1.typ"
+#include "chapters/chapter2.typ"
 // NOTE: if you want to use variables or utils provided by the package,
 // you have to import the package or a lib.typ inside a module.
 
@@ -75,7 +79,7 @@ Some text
 // If you ever need appendices in pz-lb template use the show rule
 // WARNING: when using coursework template use its own argument,
 // so it can put bibliography before appendices
-#show: appendices-style
+#show: style.appendices
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[
@@ -86,10 +90,13 @@ Some text
 
 And a TOML file would look like this:
 ```toml
-title = "Потiк керування та алгоритмічні структури Bash"
+# university = "ХНУРЕ" # "ХНУРЕ" is the default
+# edu-program = "ПЗПІ" # can be null, sourced from authors.first() by default
+
 subject = "СМП"
 doctype = "ЛБ"
 worknumber = 2
+title = "Потiк керування та алгоритмічні структури Bash"
 
 [[mentors]]
 name = "Шевченко Т. Г."
@@ -101,33 +108,57 @@ name = "Франко І. Я."
 degree = "Асистент кафедри ПІ"
 gender = "m"
 
-edu_program = "ПЗПІ"
-university = "ХНУРЕ"
-
 [[authors]]
 name = "Косач Л. П."
-full_name_gen = "Косач Лариси Петрівни"
-course = 2
-edu = "ПЗПІ"
-gender = "f"
+edu-program = "ПЗПІ"
 group = "23-2"
-semester = 4
+gender = "f"
 variant = 8
+# For coursework
+full-name-gen = "Косач Лариси Петрівни"
+course = 2
+semester = 4
 ```
 
 ### Notes:
 1. Use `#v(-spacing)` to remove vertical spacing between titles (this cannot be automatically handled by the template). Variable `spacing` used here is imported from the template.
-2. When importing `@local/nure:0.1.0` and specifying file paths in functions handled by the package, the path will relative to package's root directory, e.g. setting `#show: coursework.with(bib_path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.0/bibl.yml`, the same is for `#img` function, which makes it quite annoying and forces one to import `lib.typ` file. Please open an issue or contact us in any other way if you have any advice.
+2. When importing `@local/nure:0.1.1` and specifying file paths in functions handled by the package, the path will relative to package's root directory, e.g. setting `#show: coursework.with(bib-path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.1/bibl.yml`, the same is for `#img` function, which makes it quite annoying and forces one to import `lib.typ` file. Please open an issue or contact us in any other way if you have any advice.
+
+### Bibliography Format
+The template uses a custom CSL (Citation Style Language) file located at `src/csl/dstu-3008-2015.csl` to format bibliography entries.
+
+Supported bibliography entry types in `bibl.yml`:
+- **Book**: Books with author, title, publisher, year, and page count
+- **Web**: Web resources with title, author/organization, URL, and access date
+
+**Warning:** Other types were added by Kimi K2.5 without any additional checks for compliance.
+
+Example `bibl.yml`:
+```yaml
+mysql:
+  type: Book
+  title: MySQL Language Reference
+  author: Ab M.
+  publisher: MySQL Press
+  date: 2004
+  page-total: 600
+
+go:
+  type: Web
+  title: The Go Programming Language
+  author: The Go Programming Language
+  url:
+    value: https://go.dev/
+    date: 2024-12-10
+```
 
 ### Example Project Structure
 ```
 project/
 ├── doc.toml -- for things that don't change across works, i.e. author and mentor metadata
 ├── main.typ -- for boilerplate code and importing everything 
-├── config/
-│   ├── universities.yaml -- for user-specific configuration, i.e. education programs and disciplines
-│   └── ...
-├── src/
+├── utils.typ -- for helper functions
+├── chapters/
 │   ├── intro.typ
 │   ├── chapter1.typ
 │   ├── chapter2.typ
