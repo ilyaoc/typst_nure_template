@@ -25,9 +25,9 @@ This template:
 - `hfill` - Fills horizontal space with a filled box instead of just empty space; useful for creating underlines.
 - `uline` - Creates underlined fields that need to be filled, such as the name field on the task list.
 - `bold` - Inserts bold text inside functional environments.
-- `img` - Inserts images with a caption, automatically deriving the label from the image file name.
+- `img` - Inserts images with a caption, automatically deriving the label from the image file name (use via `#import "@local/nure:0.1.1": utils` and call `utils.img`).
 
-**Note:** `img()` is provided in `utils.typ` in project's root directory for compatibility, until [path() type](https://github.com/typst/typst/pull/7555) is released.
+**Note:** `img()` is provided in `template/utils.typ` so you can copy it into your project root for compatibility, until [path() type](https://github.com/typst/typst/pull/7555) is released.
 
 ## Usage
 
@@ -42,7 +42,7 @@ typst init @local/nure:0.1.1 project-name
 ```
 
 ### As a standalone file
-Copy `src/` to your project's root directory, optionally renaming `src/` to `lib/`.
+Copy `src/` to your project's root directory, optionally renaming `src/` to `lib/` (then import `src/lib.typ` or `lib/lib.typ` accordingly).
 
 ### In your project
 ```typst
@@ -51,11 +51,12 @@ Copy `src/` to your project's root directory, optionally renaming `src/` to `lib
 // ...or by importing a lib.typ directly
 // #import "/lib/lib.typ": *
 
+// NOTE: all template arguments use kebab-case.
+
 // 1. Setup the document
 // by setting values directly...
 #show: pz-lb.with(
   title: "Some title",
-  // etc: "and so on",
   // ...
 )
 // ...or using a yaml/toml file
@@ -73,13 +74,15 @@ Some text
 #include "chapters/chapter1.typ"
 #include "chapters/chapter2.typ"
 // NOTE: if you want to use variables or utils provided by the package,
-// you have to import the package or a lib.typ inside a module.
+// you have to import the package or a lib.typ inside a module (e.g. #import "@local/nure:0.1.1": utils).
 
 
 // If you ever need appendices in pz-lb template use the show rule
 // WARNING: when using coursework template use its own argument,
 // so it can put bibliography before appendices
 #show: style.appendices
+
+// For coursework appendices, pass them via `appendices:` argument instead.
 
 = Quote
 #link("https://youtu.be/bJQj1uKtnus")[
@@ -122,7 +125,7 @@ semester = 4
 
 ### Notes:
 1. Use `#v(-spacing)` to remove vertical spacing between titles (this cannot be automatically handled by the template). Variable `spacing` used here is imported from the template.
-2. When importing `@local/nure:0.1.1` and specifying file paths in functions handled by the package, the path will relative to package's root directory, e.g. setting `#show: coursework.with(bib-path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.1/bibl.yml`, the same is for `#img` function, which makes it quite annoying and forces one to import `lib.typ` file. Please open an issue or contact us in any other way if you have any advice.
+2. When importing `@local/nure:0.1.1` and specifying file paths in functions handled by the package, the path will be relative to the package root, e.g. setting `#show: coursework.with(bib-path: "bibl.yml")` will evaluate to `~/.local/share/typst/packages/local/nure/0.1.1/bibl.yml`. The same applies to `utils.img` unless you copy `template/utils.typ` into your project root and import from there.
 
 ### Bibliography Format
 The template uses a custom CSL (Citation Style Language) file located at `src/csl/dstu-3008-2015.csl` to format bibliography entries.
