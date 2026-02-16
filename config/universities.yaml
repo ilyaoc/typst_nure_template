@@ -13,8 +13,8 @@
     КНТ:
       name_en: CST # computer sciences and technologies
       name_long: Комп'ютерні науки та технології
-      department_gen: Системотехніки
-      department_en: ST
+      department_gen: Комп'ютерного моделювання та інтелектуальних технологій
+      department_en: CMIT
       code: 122
   subjects:
     DMT: Decision making theory
