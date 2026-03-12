@@ -89,12 +89,12 @@
 
   // Select layout variant
   let layouts = (
-    "complex": tp.pz-lb.complex(uni, edu-program, subject, type, number, title, authors, mentors),
-    "ХНУРЕ": tp.pz-lb.nure(uni, edu-program, subject, type, number, title, authors, mentors),
-    "default": tp.pz-lb.nure(uni, edu-program, subject, type, number, title, authors, mentors),
+    "complex": () => tp.pz-lb.complex(uni, edu-program, subject, type, number, title, authors, mentors),
+    "ХНУРЕ": () => tp.pz-lb.nure(uni, edu-program, subject, type, number, title, authors, mentors),
+    "default": () => tp.pz-lb.nure(uni, edu-program, subject, type, number, title, authors, mentors),
   )
 
-  layouts.at(university, default: layouts.default)
+  (layouts.at(university, default: layouts.default))()
 
   pagebreak(weak: true)
 
