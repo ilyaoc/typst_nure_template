@@ -6,7 +6,7 @@
 #let double-half-spacing = spacing * 2.5
 
 /// Ukrainian alphabet for DSTU 3008:2015 numbering
-#let ukr-enum = "абвгдежиклмнпрстуфхцшщюя".split("").slice(1)
+#let ukr-enum = "абвгдежиклмнпрстуфхцшщюя".clusters()
 
 /// Helper for level 2/3 heading blocks
 #let heading-block(it, num: auto) = {
