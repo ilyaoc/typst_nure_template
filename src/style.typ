@@ -6,7 +6,7 @@
 #let double-half-spacing = spacing * 2.5
 
 /// Ukrainian alphabet for DSTU 3008:2015 numbering
-#let ukr-enum = "абвгдежиклмнпрстуфхцшщюя".split("")
+#let ukr-enum = "абвгдежиклмнпрстуфхцшщюя".split("").slice(1)
 
 /// Helper for level 2/3 heading blocks
 #let heading-block(it, num: auto) = {
@@ -40,7 +40,7 @@
   set underline(evade: false)
 
   // Lists
-  set enum(indent: indent-size, body-indent: 0.5cm, numbering: i => ukr-enum.at(i) + ")")
+  set enum(indent: indent-size, body-indent: 0.5cm, numbering: i => ukr-enum.at(i - 1) + ")")
   show enum: it => {
     set enum(indent: 0em, numbering: "1)")
     it
@@ -106,7 +106,7 @@
 
   context {
     let app-letter = upper(ukr-enum.at(counter(heading).get().at(0)))
-    set heading(numbering: (i, ..n) => upper(ukr-enum.at(i)) + numbering(".1.1", ..n))
+    set heading(numbering: (i, ..n) => upper(ukr-enum.at(i - 1)) + numbering(".1.1", ..n))
     set figure(numbering: i => app-letter + "." + str(i))
     set math.equation(numbering: i => app-letter + "." + str(i))
     set heading(supplement: [Додаток])
