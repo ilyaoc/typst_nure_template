@@ -7,5 +7,5 @@ license = "GPL-3.0"
 description = "Typst NURE package"
 
 [template]
-path = "template"
+path = "template/default"
 entrypoint = "lab.typ"

@@ -1,0 +1,19 @@
+university = "ХНУРЕ"
+subject = "АКС"
+type = "ЛБ"
+number = 1
+
+[[mentors]]
+name = ""
+degree = ""
+gender = ""
+
+[[authors]]
+name = ""
+edu-program = "КУІБ"
+group = "24-1"
+gender = "m"
+variant = 6
+full-name-gen = ""
+course = 2
+semester = 4
