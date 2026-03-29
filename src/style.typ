@@ -109,7 +109,7 @@
 
   let app-letter = context upper(ukr-enum.at(counter(heading).get().at(0) - 1))
   set figure(numbering: i => app-letter + "." + str(i))
-  set math.equation(numbering: i => app-letter + "." + str(i))
+  set math.equation(numbering: i => [(#app-letter.#str(i))])
 
   show heading: h => {
     set text(size: 14pt)
