@@ -9,8 +9,9 @@
 // #show: style.dstu
 #show: pz-lb.with(..toml("doc.toml"), title: "") // set title to none if empty
 
-// Useful snippets
+/// Useful snippets
 
+/// Import a .csv table
 // #figure(
 //   caption: [],
 //   table(
@@ -20,4 +21,8 @@
 //   ),
 // )
 
-// #style.appendices(include "appendices.typ")
+/// Appendices
+// #style.appendices(include "chapters/appendices.typ")
+// or
+// #show: style.appendices
+// = ...

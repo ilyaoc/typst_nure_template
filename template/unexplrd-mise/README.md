@@ -19,7 +19,6 @@ This example has the following structure:
     │   ├── error-log.jpg
     │   └── ...
     ├── doc.toml
-    ├── appendices.typ
     ├── main.typ
     └── utils.typ
 ```
@@ -30,13 +29,28 @@ This example has the following structure:
 - Fixed dependencies: locked Typst version, `nure` package fetched from a specific commit
 - Customizable: it's just a `.toml` file, modify it according to your needs
 
-## Mise tasks
+## Project structure
+All work contents are stored in `src/` to avoid clutter.
+
+### Files
+- `src/doc.toml`: work-specific settings, could be auto-filled, see (TODO: add a demo nushell script)
+- `src/utils.typ`: utilities and functions used across the project
+- `src/main.typ`: main entry file
+
+### Directories
+- `src/chapters/`: for breaking up the project into multiple files, if necessary
+- `src/figures/`: for images and pictures
+- `src/assets/`: other non-image, non-typst files
+
+## Mise
+
+### Tasks
 - `compile`: Execute `typst compile` on `src/main.typ`
 - `watch`: Execute `typst watch` on `src/main.typ`
 - `fetch-nure-package`: clone package git repository to a directory specified in `[vars]`
 - `update-package-rev`: updates `vars.nure_package_rev` with the last commit id from the specified branch (`vars.nure_package_ref`)
 
-## Examples
+### Examples
 - A patch to add new subjects to the package:
   ```diff
   diff --git a/src/config/universities.yaml b/src/config/universities.yaml
