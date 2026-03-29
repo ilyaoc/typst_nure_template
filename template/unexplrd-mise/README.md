@@ -24,7 +24,8 @@ This example has the following structure:
 ```
 
 ## Advantages
-- Declarative approach
+- Minimal: all you need is `mise`, see https://mise.jdx.dev/
+- Declarative approach: less unexpected behavior like broken versions in flaky setups
 - Fixed dependencies: locked Typst version, `nure` package fetched from a specific commit
 - Customizable: it's just a `.toml` file, modify it according to your needs
 
