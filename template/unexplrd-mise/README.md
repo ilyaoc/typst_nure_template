@@ -3,8 +3,9 @@
 This example has the following structure:
 ```
 .
-├── mise.lock
-├── mise.toml
+├── .mise/
+│   ├── config.toml
+│   └── mise.lock
 ├── vendor/
 │   └── typst-packages/
 │       └── ...

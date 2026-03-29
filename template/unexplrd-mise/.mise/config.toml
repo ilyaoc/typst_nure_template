@@ -11,6 +11,7 @@ yq = "latest"
 
 [vars]
 vendor_dir = "{{config_root}}/vendor"
+package_dir = "{{vars.vendor_dir}}/typst-packages"
 
 work_doc_config = "src/doc.toml"
 work_input_file = "src/main.typ"
@@ -19,13 +20,14 @@ work_output_file = "{{config_root}}/main.pdf"
 nure_package_repo = "https://gitea.linerds.us/pencelheimer/typst_nure_template.git"
 nure_package_ref = "0.1.1"
 nure_package_rev = "af2ba45a16f94b37cae9db0f8fdb915db545498d"
-nure_package_path = "{{env.TYPST_PACKAGE_DIR}}/{{vars.nure_package_name}}/{{vars.nure_package_ver}}"
 
 nure_package_name = "vendor/nure"
 nure_package_ver = "{{vars.nure_package_ref}}"
 
+nure_package_path = "{{vars.package_dir}}/{{vars.nure_package_name}}/{{vars.nure_package_ver}}"
+
 [env]
-TYPST_PACKAGE_DIR = "{{vars.vendor_dir}}/typst-packages"
+TYPST_PACKAGE_DIR = "{{vars.package_dir}}"
 TYPST_PACKAGE_PATH = "$TYPST_PACKAGE_DIR"
 
 [tasks.watch]
