@@ -77,6 +77,7 @@
   title: none,
   authors: (),
   mentors: (),
+  skip-heading: false,
 ) = {
   assert(authors.len() > 0, message: "At least one author required")
 
@@ -96,18 +97,21 @@
 
   (layouts.at(university, default: layouts.default))()
 
-  pagebreak(weak: true)
+  if not skip-heading {
+    pagebreak(weak: true)
 
-  // Set heading counter based on title/number
-  if title == none {
-    if number == none { context counter(heading).update(1) } else {
-      context counter(heading).update(number)
+    // Set heading counter based on title/number
+    if title == none {
+      if number == none { context counter(heading).update(1) } else {
+        context counter(heading).update(number)
+      }
+    } else {
+      if number != none {
+        context counter(heading).update(number - 1)
+      }
+
+      heading(eval(title, mode: "markup"))
     }
-  } else {
-    if number != none {
-      context counter(heading).update(number - 1)
-    }
-    heading(eval(title, mode: "markup"))
   }
 
   doc
