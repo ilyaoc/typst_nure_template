@@ -1,4 +1,4 @@
-#import "@local/nure:0.1.1": utils
+#import "@vendor/nure:0.1.1": utils
 
 /// captioned image with auto-generated label from path
 /// Usage: img("path/to/image.png", "Caption")(optional: "source")
