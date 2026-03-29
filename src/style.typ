@@ -104,29 +104,33 @@
 #let appendices(it) = {
   counter(heading).update(0)
 
-  context {
-    let app-letter = upper(ukr-enum.at(counter(heading).get().at(0)))
-    set heading(numbering: (i, ..n) => upper(ukr-enum.at(i - 1)) + numbering(".1.1", ..n))
-    set figure(numbering: i => app-letter + "." + str(i))
-    set math.equation(numbering: i => app-letter + "." + str(i))
-    set heading(supplement: [Додаток])
+  set heading(numbering: (i, ..n) => upper(ukr-enum.at(i - 1)) + numbering(".1.1", ..n))
+  set heading(supplement: [Додаток])
 
-    show heading: h => {
-      set text(size: 14pt)
-      if h.level == 1 {
-        set align(center)
-        set text(weight: "regular")
-        pagebreak(weak: true)
-        bold([ДОДАТОК #counter(heading).display(auto)])
-        linebreak()
-        h.body
-        v(double-spacing, weak: true)
-      } else {
-        set text(weight: "regular")
-        heading-block(h)
-      }
+  let app-letter = context upper(ukr-enum.at(counter(heading).get().at(0) - 1))
+  set figure(numbering: i => app-letter + "." + str(i))
+  set math.equation(numbering: i => app-letter + "." + str(i))
+
+  show heading: h => {
+    set text(size: 14pt)
+    if h.level == 1 {
+      counter(math.equation).update(0)
+      counter(figure.where(kind: raw)).update(0)
+      counter(figure.where(kind: image)).update(0)
+      counter(figure.where(kind: table)).update(0)
+
+      set align(center)
+      set text(weight: "regular")
+      pagebreak(weak: true)
+      bold([ДОДАТОК #counter(heading).display(auto)])
+      linebreak()
+      h.body
+      v(double-spacing, weak: true)
+    } else {
+      set text(weight: "regular")
+      heading-block(h)
     }
-
-    it
   }
+
+  it
 }
