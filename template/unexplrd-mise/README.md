@@ -33,7 +33,7 @@ This example has the following structure:
 All work contents are stored in `src/` to avoid clutter.
 
 ### Files
-- `src/doc.toml`: work-specific settings, could be auto-filled, see (TODO: add a demo nushell script)
+- `src/doc.toml`: work-specific settings, could be auto-filled, useful for scripts, see (TODO: add a demo nushell script)
 - `src/utils.typ`: utilities and functions used across the project
 - `src/main.typ`: main entry file
 
@@ -47,6 +47,7 @@ All work contents are stored in `src/` to avoid clutter.
 ### Tasks
 - `compile`: Execute `typst compile` on `src/main.typ`
 - `watch`: Execute `typst watch` on `src/main.typ`
+- `rename`: Copy output `.pdf` file with an auto-generated name from metadata in `doc.toml`
 - `fetch-nure-package`: clone package git repository to a directory specified in `[vars]`
 - `update-package-rev`: updates `vars.nure_package_rev` with the last commit id from the specified branch (`vars.nure_package_ref`)
 
@@ -75,9 +76,9 @@ All work contents are stored in `src/` to avoid clutter.
   +    МКр: Мережна криміналістика
   +    ОКЗІ: Основи криптографічного захисту інформації
   +    Прог: Програмування
-  +    ТІК: Теорія інформаціі та кодування
+  +    ТІК: Теорія інформації та кодування
   ```
-  To apply it, add the following command to the `fetch_nure_package` task:
+  To apply it, add the following command to the end of `fetch_nure_package` task:
   ```sh
   git -C {{vars.nure_package_path}} apply --check --apply --quiet $MISE_PROJECT_ROOT/custom-subjects.patch || exit 0
   ```

@@ -19,7 +19,8 @@ work_output_file = "{{config_root}}/main.pdf"
 
 nure_package_repo = "https://gitea.linerds.us/pencelheimer/typst_nure_template.git"
 nure_package_ref  = "0.1.1"
-nure_package_rev  = "af2ba45a16f94b37cae9db0f8fdb915db545498d"
+
+nure_package_rev = "9abbc7c1e161523145c27a098add79886968547c"
 
 nure_package_name = "vendor/nure"
 nure_package_ver  = "{{vars.nure_package_ref}}"
@@ -53,10 +54,12 @@ run = """
   fi
 """
 
-[tasks.copy]
+[tasks.rename]
 depends = ["compile"]
 run = """
   #!/usr/bin/env bash
+  # Generates the following name from doc.toml: ПЗ1_Прізвище_ПЗПІ-23-2_ПарП.pdf
+  # Assumes authors.at(0).name to be in the following format: "Прізвище І. Б."
 
   final_name=$(mise exec -- yq '.type + (.number | tostring) + "_" + (.authors[0].name | split(" "))[0] + "_" + (.authors[0].edu-program + "-" + .authors[0].group) + "_" + .subject + ".pdf"' "{{vars.work_doc_config}}");
 
