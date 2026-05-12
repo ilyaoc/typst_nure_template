@@ -25,7 +25,10 @@
         if not is-empty(a.variant) [Варіант: №#a.variant]
       } else if authors.len() > 1 [
         #gender-form("author"):\
-        #for a in authors [ст. гр. #a.edu-program\-#a.group\ #a.name\ ]
+        #for a in authors [
+          #if ("edu-program" in a) and ("group" in a) [ ст. гр. #a.edu-program\-#a.group\ ]
+          #a.name\
+        ]
       ]
 
       #colbreak()
