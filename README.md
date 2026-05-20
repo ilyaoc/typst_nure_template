@@ -3,7 +3,7 @@
 
 ## General Info
 
-This project contains two template functions and some utilities for writing NURE works. All functions include documentation comments inside them, so you can explore all possibilities using LSP.
+This project contains template functions and some utilities for writing NURE works. All functions include documentation comments inside them, so you can explore all possibilities using LSP.
 
 ### Templates
 
@@ -19,6 +19,8 @@ This template:
 - Typesets the bibliography according to ДСТУ 3008:2015 using custom CSL style;
 - Typesets the outline and appendices according to standard requirements.
 
+#### `coursework-v2` - New Coursework Variant
+This template keeps the legacy coursework template intact while offering the newer title/task-page layout. See `template/default/coursework-v2.typ` for an example entrypoint.
 
 ### Utilities
 - `nheading` - For unnumbered headings, such as "Introduction" and "Conclusion".

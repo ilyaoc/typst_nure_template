@@ -5,6 +5,8 @@
 #import "./style.typ"
 #import "./utils.typ"
 
+#let dstu-table = style.dstu-table
+
 /// Coursework template for NURE
 /// - university (str): University code, default "ХНУРЕ"
 /// - subject (str): Subject short name
@@ -47,6 +49,71 @@
   doc
 
   // Bibliography with DSTU formatting
+  {
+    show regex("^\\d+\\."): it => [#it#h(0.5cm)]
+    show block: it => [#it.body#parbreak()]
+    bibliography(bib-path, title: [Перелік джерел посилання], style: "csl/dstu-3008-2015.csl", full: true)
+  }
+
+  style.appendices(appendices)
+}
+
+/// Alternative coursework template for NURE.
+/// - university (str): University code, default "ХНУРЕ"
+/// - title (str): Work title
+/// - authors (array): List of author dictionaries
+/// - mentors (array): List of mentor dictionaries
+/// - task-list (dict): Task metadata
+/// - calendar-plan (dict): Calendar plan table
+/// - abstract (dict): Keywords and abstract text
+/// - bib-path (str): Path to bibliography file
+/// - appendices (content): Appendix content
+#let coursework-v2(
+  doc,
+  university: "ХНУРЕ",
+  title: none,
+  authors: (),
+  mentors: (),
+  task-list: (),
+  calendar-plan: (),
+  abstract: (),
+  bib-path: none,
+  appendices: (),
+  faculty: "комп’ютерних наук",
+  education-level: "перший (бакалаврський)",
+  program-type: "освітньо-професійна",
+  program-name: none,
+) = {
+  assert(authors.len() > 0, message: "At least one author required")
+  assert(mentors.len() > 0, message: "At least one mentor required")
+
+  set document(title: title, author: authors.map(c => c.name))
+
+  show: style.dstu.with(skip: 1)
+
+  let bib-count = state("citation-counter", ())
+  show cite: it => {
+    it
+    bib-count.update(((..c)) => (..c, it.key))
+  }
+
+  tp.cw-v2.nure(
+    university,
+    title,
+    authors,
+    mentors,
+    task-list,
+    calendar-plan,
+    abstract,
+    bib-count,
+    faculty: faculty,
+    education-level: education-level,
+    program-type: program-type,
+    program-name: program-name,
+  )
+
+  doc
+
   {
     show regex("^\\d+\\."): it => [#it#h(0.5cm)]
     show block: it => [#it.body#parbreak()]
