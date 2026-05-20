@@ -7,6 +7,13 @@
 /// fill horizontal space with a filled box
 #let hfill(width) = box(width: width, repeat(" "))  // HAIR SPACE (U+200A)
 
+/// convert an array of lines into filled lines for underlined task fields
+#let filled-lines(content) = if type(content) == array {
+  content.map(line => [#line #hfill(1fr)]).join(linebreak())
+} else {
+  content
+}
+
 /// underlined cell with centered content by default
 #let uline(align: center, content) = underline[
   #if align != left { hfill(1fr) }

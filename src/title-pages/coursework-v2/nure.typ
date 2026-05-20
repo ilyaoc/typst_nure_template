@@ -1,7 +1,7 @@
 #import "../../shared.typ": universities
 #import "../../helpers.typ": *
 #import "../../style.typ": spacing
-#import "../../utils.typ": bold, uline
+#import "../../utils.typ": bold, uline, filled-lines
 
 #let note(content) = block(width: 100%, above: 5pt, below: 0pt)[
   #set text(size: 10pt)
@@ -69,7 +69,7 @@
 #let task-num(n) = box(str(n) + ".")
 
 #let title-field(value) = {
-  uline(align: center, value)
+  uline(align: center, filled-lines(value))
   uline(align: center, [])
   note[(тема)]
 }
@@ -126,7 +126,7 @@
     #set align(left)
     #inline-label-line(
       [Факультет],
-      faculty + " (або центр післядипломної освіти, або навчально-науковий центр заочної форми навчання)",
+      faculty,
     )
     #note([(повна назва)])
 
@@ -201,8 +201,7 @@
       (
         [Факультет],
         (
-          faculty + " (або центр післядипломної освіти, або",
-          "навчально-науковий центр заочної форми навчання)",
+          faculty,
         ),
       ),
       ([Кафедра], edu-prog.department-gen),
@@ -234,20 +233,20 @@
 
     #v(1.0em)
 
-    #task-num(1) Тема роботи #uline(align: left)[#title]
+    #task-num(1) Тема роботи #uline(align: left, filled-lines(title))
 
     #v(0.4em)
     #task-num(2) Термін здачі студентом закінченої роботи
     “#underline(task-list.done-date.display("[day]"))” #underline(month-gen(task-list.done-date.month())) #task-list.done-date.display("[year]")р.
 
     #v(0.4em)
-    #task-num(3) Вихідні дані до проєкту #uline(align: left, task-list.at("source", default: []))
+    #task-num(3) Вихідні дані до проєкту #uline(align: left, filled-lines(task-list.at("source", default: [])))
     #v(0.4em)
     #uline(align: left, [])
 
     #v(0.4em)
     #task-num(4) Перелік питань, що потрібно опрацювати в роботі\
-    #uline(align: left, task-list.at("content", default: []))
+    #uline(align: left, filled-lines(task-list.at("content", default: [])))
     #v(0.4em)
     #uline(align: left, [])
 

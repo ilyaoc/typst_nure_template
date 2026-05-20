@@ -23,8 +23,16 @@
 #let task-list = (
   done-date: datetime(year: 2026, month: 12, day: 27),
   initial-date: datetime(year: 2026, month: 9, day: 15),
-  source: [],
-  content: [],
+  source: [
+    Узагальнити модель предметної області,
+    визначити основні сутності та зв'язки між ними.
+    Підготувати демонстраційний набір технологій для шаблону.
+  ],
+  content: [
+    Опис предметної галузі, формування вимог,
+    архітектурне проєктування, тестування та
+    перевірка верстки пояснювальної записки.
+  ],
 )
 
 #let calendar-plan = (
@@ -67,6 +75,31 @@
   ],
 )
 
+#let abstract_en = (
+  keywords: (
+    "WEB APPLICATION",
+    "INFORMATION SYSTEM",
+    "COURSEWORK",
+    "SOFTWARE ENGINEERING",
+    "DEMO SAMPLE",
+  ),
+  text: [
+    The purpose of this work is to demonstrate the formatting of a coursework
+    explanatory note using the new template variant.
+
+    The sample contains a generalized topic, typical pages for the assignment,
+    calendar plan, abstract, contents, bibliography, and appendices.
+
+    The work presents an illustrative structure of a software system that can be
+    adapted to a specific subject area. The main focus is on checking title-page
+    fields, assignment-page fields, signature blocks, section numbering, and
+    appendix handling.
+
+    The result is a demonstration document that shows the expected template usage
+    without being tied to a real student, supervisor, or completed project.
+  ],
+)
+
 #let appendices = [
   = Приклад звіту 1
   #v(-spacing)
@@ -83,12 +116,16 @@
 ]
 
 #show: coursework-v2.with(
-  title: "Демонстраційна інформаційна система для комплексного курсового проєкту",
+  title: (
+    "Демонстраційна інформаційна система для комплексного ",
+    "курсового проєкту",
+  ),
   authors: authors,
   mentors: mentors,
   task-list: task-list,
   calendar-plan: calendar-plan,
   abstract: abstract,
+  abstract-en: abstract_en,
   bib-path: bytes(read("bibl.yml")),
   appendices: appendices,
 )

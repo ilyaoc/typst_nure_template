@@ -6,6 +6,7 @@
 #import "./utils.typ"
 
 #let dstu-table = style.dstu-table
+#let hfill = utils.hfill
 
 /// Coursework template for NURE
 /// - university (str): University code, default "ХНУРЕ"
@@ -31,7 +32,8 @@
   bib-path: none,
   appendices: (),
 ) = {
-  set document(title: title, author: authors.map(c => c.name))
+  let doc-title = if type(title) == array { title.join(" ") } else { title }
+  set document(title: doc-title, author: authors.map(c => c.name))
 
   show: style.dstu.with(skip: 1)
 
@@ -66,6 +68,7 @@
 /// - task-list (dict): Task metadata
 /// - calendar-plan (dict): Calendar plan table
 /// - abstract (dict): Keywords and abstract text
+/// - abstract-en (dict): Optional English keywords and abstract text
 /// - bib-path (str): Path to bibliography file
 /// - appendices (content): Appendix content
 #let coursework-v2(
@@ -77,6 +80,7 @@
   task-list: (),
   calendar-plan: (),
   abstract: (),
+  abstract-en: none,
   bib-path: none,
   appendices: (),
   faculty: "комп’ютерних наук",
@@ -87,7 +91,8 @@
   assert(authors.len() > 0, message: "At least one author required")
   assert(mentors.len() > 0, message: "At least one mentor required")
 
-  set document(title: title, author: authors.map(c => c.name))
+  let doc-title = if type(title) == array { title.join(" ") } else { title }
+  set document(title: doc-title, author: authors.map(c => c.name))
 
   show: style.dstu.with(skip: 1)
 
@@ -95,6 +100,12 @@
   show cite: it => {
     it
     bib-count.update(((..c)) => (..c, it.key))
+  }
+
+  let abstract = if abstract-en != none {
+    abstract + (en: abstract-en)
+  } else {
+    abstract
   }
 
   tp.cw-v2.nure(
